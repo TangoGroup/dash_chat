@@ -81,9 +81,7 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
     return Container(
       padding: inputToolbarPadding,
       margin: inputToolbarMargin,
-      decoration: inputContainerStyle != null
-          ? inputContainerStyle
-          : BoxDecoration(color: Colors.transparent),
+      decoration: inputContainerStyle != null ? inputContainerStyle : BoxDecoration(color: Colors.transparent),
       child: Column(
         children: <Widget>[
           Row(
@@ -103,43 +101,28 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
                       hideSuggestionsOnKeyboardHide: false,
                       onSuggestionSelected: (suggestion) {
                         int cursor = controller!.value.selection.base.offset;
-                        int lastAtSymbol = controller!.text
-                            .substring(0, cursor)
-                            .lastIndexOf('@');
+                        int lastAtSymbol = controller!.text.substring(0, cursor).lastIndexOf('@');
                         if (lastAtSymbol < 0) return;
 
-                        int newCursorPos = lastAtSymbol +
-                            suggestion.name!.length +
-                            2; //account for space at end
-                        String newText = controller!.text.replaceRange(
-                            lastAtSymbol, cursor, '@${suggestion.name} ');
-                        TextSelection newSelection = controller!.selection
-                            .copyWith(
-                                baseOffset: newCursorPos,
-                                extentOffset: newCursorPos);
+                        int newCursorPos = lastAtSymbol + suggestion.name!.length + 2; //account for space at end
+                        String newText = controller!.text.replaceRange(lastAtSymbol, cursor, '@${suggestion.name} ');
+                        TextSelection newSelection =
+                            controller!.selection.copyWith(baseOffset: newCursorPos, extentOffset: newCursorPos);
 
-                        controller!.value = controller!.value
-                            .copyWith(text: newText, selection: newSelection);
+                        controller!.value = controller!.value.copyWith(text: newText, selection: newSelection);
 
                         onTextChange!(newText);
                       },
                       suggestionsCallback: (String pattern) {
                         int cursor = controller!.value.selection.base.offset;
                         if (cursor < 0) return noSuggestions;
-                        int lastAtSymbol =
-                            (pattern.substring(0, cursor) ?? pattern)
-                                .lastIndexOf('@');
+                        int lastAtSymbol = (pattern.substring(0, cursor)).lastIndexOf('@');
                         if (lastAtSymbol < 0) return noSuggestions;
                         if (lastAtSymbol != 0) {
-                          int lastSpace =
-                              (pattern.substring(lastAtSymbol, cursor) ??
-                                      pattern)
-                                  .lastIndexOf(' ');
+                          int lastSpace = (pattern.substring(lastAtSymbol, cursor)).lastIndexOf(' ');
                           if (lastSpace > 0) return noSuggestions;
                         }
-                        return getMentionSuggestions?.call(
-                                pattern.substring(lastAtSymbol, cursor)) ??
-                            noSuggestions;
+                        return getMentionSuggestions(pattern.substring(lastAtSymbol, cursor));
                       },
                       itemBuilder: mentionSuggestionBuilder,
                       textFieldConfiguration: TextFieldConfiguration(
@@ -160,8 +143,7 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
                                 hintText: "",
                                 fillColor: Colors.white,
                               ),
-                        textCapitalization:
-                            textCapitalization ?? TextCapitalization.none,
+                        textCapitalization: textCapitalization ?? TextCapitalization.none,
                         controller: controller,
                         style: inputTextStyle,
                         maxLength: maxInputLength,
@@ -189,9 +171,7 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
               else
                 IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: alwaysShowSend || text!.length != 0
-                      ? () => _sendMessage(context, message)
-                      : null,
+                  onPressed: alwaysShowSend || text!.length != 0 ? () => _sendMessage(context, message) : null,
                 ),
               if (!showTraillingBeforeSend) ...trailing,
             ],
