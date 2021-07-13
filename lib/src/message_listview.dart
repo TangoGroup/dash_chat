@@ -3,39 +3,39 @@ part of dash_chat;
 class MessageListView extends StatefulWidget {
   final List<ChatMessage> messages;
   final ChatUser user;
-  final bool showUserAvatar;
-  final DateFormat dateFormat;
-  final DateFormat timeFormat;
-  final bool showAvatarForEverMessage;
-  final Function(ChatUser) onPressAvatar;
-  final Function(ChatUser) onLongPressAvatar;
-  final bool renderAvatarOnTop;
-  final Function(ChatMessage) onLongPressMessage;
+  final bool? showUserAvatar;
+  final DateFormat? dateFormat;
+  final DateFormat? timeFormat;
+  final bool? showAvatarForEverMessage;
+  final Function(ChatUser)? onPressAvatar;
+  final Function(ChatUser)? onLongPressAvatar;
+  final bool? renderAvatarOnTop;
+  final Function(ChatMessage)? onLongPressMessage;
   final bool inverted;
-  final Widget Function(ChatUser) avatarBuilder;
-  final Widget Function(ChatMessage) messageBuilder;
-  final Widget Function(String, [ChatMessage]) messageTextBuilder;
-  final Widget Function(String, [ChatMessage]) messageImageBuilder;
-  final Widget Function(String, [ChatMessage]) messageTimeBuilder;
-  final Widget Function(String) dateBuilder;
-  final Widget Function() renderMessageFooter;
-  final BoxDecoration messageContainerDecoration;
+  final Widget Function(ChatUser)? avatarBuilder;
+  final Widget Function(ChatMessage)? messageBuilder;
+  final Widget Function(String?, [ChatMessage])? messageTextBuilder;
+  final Widget Function(String?, [ChatMessage])? messageImageBuilder;
+  final Widget Function(String, [ChatMessage])? messageTimeBuilder;
+  final Widget Function(String)? dateBuilder;
+  final Widget Function()? renderMessageFooter;
+  final BoxDecoration? messageContainerDecoration;
   final List<MatchText> parsePatterns;
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
   final EdgeInsets messageContainerPadding;
-  final Function changeVisible;
-  final bool visible;
-  final bool showLoadMore;
-  final bool shouldShowLoadEarlier;
-  final Widget Function() showLoadEarlierWidget;
-  final Function onLoadEarlier;
+  final Function? changeVisible;
+  final bool? visible;
+  final bool? showLoadMore;
+  final bool? shouldShowLoadEarlier;
+  final Widget Function()? showLoadEarlierWidget;
+  final Function? onLoadEarlier;
   final Function(bool) defaultLoadCallback;
-  final BoxConstraints constraints;
-  final List<Widget> Function(ChatMessage) messageButtonsBuilder;
+  final BoxConstraints? constraints;
+  final List<Widget> Function(ChatMessage)? messageButtonsBuilder;
   final EdgeInsets messagePadding;
   final bool textBeforeImage;
-  final double avatarMaxSize;
-  final BoxDecoration Function(ChatMessage, bool) messageDecorationBuilder;
+  final double? avatarMaxSize;
+  final BoxDecoration Function(ChatMessage, bool?)? messageDecorationBuilder;
   final ScrollPhysics scrollPhysics;
 
   MessageListView({
@@ -44,19 +44,19 @@ class MessageListView extends StatefulWidget {
     this.shouldShowLoadEarlier,
     this.constraints,
     this.onLoadEarlier,
-    this.defaultLoadCallback,
+    required this.defaultLoadCallback,
     this.messageContainerPadding =
         const EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0),
     this.scrollController,
     this.parsePatterns = const [],
     this.messageContainerDecoration,
-    this.messages,
-    this.user,
+    required this.messages,
+    required this.user,
     this.showUserAvatar,
     this.dateFormat,
     this.timeFormat,
     this.showAvatarForEverMessage,
-    this.inverted,
+    required this.inverted,
     this.onLongPressAvatar,
     this.onLongPressMessage,
     this.onPressAvatar,
@@ -90,12 +90,12 @@ class _MessageListViewState extends State<MessageListView> {
         widget.inverted ? 0.0 : scrollNotification.metrics.maxScrollExtent;
 
     if (scrollNotification.metrics.pixels == bottom) {
-      if (widget.visible) {
-        widget.changeVisible(false);
+      if (widget.visible!) {
+        widget.changeVisible!(false);
       }
     } else if ((scrollNotification.metrics.pixels - bottom).abs() > 100) {
-      if (!widget.visible) {
-        widget.changeVisible(true);
+      if (!widget.visible!) {
+        widget.changeVisible!(true);
       }
     }
     // This was originally returning `true`, which suppresses scroll events from bubbling up.  We are flipping it to `false` so that we can wrap `DashChat` in a `RefreshIndicator`.  An issue is filed here to help us track context around this: https://github.com/fayeed/dash_chat/issues/175
@@ -103,7 +103,7 @@ class _MessageListViewState extends State<MessageListView> {
   }
 
   bool shouldShowAvatar(int index) {
-    if (widget.showAvatarForEverMessage) {
+    if (widget.showAvatarForEverMessage!) {
       return true;
     }
     if (!widget.inverted && index + 1 < widget.messages.length) {
@@ -128,7 +128,7 @@ class _MessageListViewState extends State<MessageListView> {
         onTap: () {
           final currentFocus = FocusScope.of(context);
           if (!currentFocus.hasPrimaryFocus && currentFocus.hasFocus) {
-            FocusManager.instance.primaryFocus.unfocus();
+            FocusManager.instance.primaryFocus?.unfocus();
           }
         },
         child: Padding(
@@ -208,7 +208,7 @@ class _MessageListViewState extends State<MessageListView> {
                                   horizontal: constraints.maxWidth * 0.02,
                                 ),
                                 child: Opacity(
-                                  opacity: (widget.showAvatarForEverMessage ||
+                                  opacity: (widget.showAvatarForEverMessage! ||
                                               showAvatar) &&
                                           widget.messages[i].user.uid !=
                                               widget.user.uid
@@ -227,7 +227,7 @@ class _MessageListViewState extends State<MessageListView> {
                                 child: GestureDetector(
                                   onLongPress: () {
                                     if (widget.onLongPressMessage != null) {
-                                      widget.onLongPressMessage(
+                                      widget.onLongPressMessage!(
                                           widget.messages[i]);
                                     } else {
                                       showBottomSheet(
@@ -258,7 +258,7 @@ class _MessageListViewState extends State<MessageListView> {
                                   },
                                   child: widget.messageBuilder != null
                                       ? widget
-                                          .messageBuilder(widget.messages[i])
+                                          .messageBuilder!(widget.messages[i])
                                       : Align(
                                           alignment: widget
                                                       .messages[i].user.uid ==
@@ -295,18 +295,19 @@ class _MessageListViewState extends State<MessageListView> {
                                         ),
                                 ),
                               ),
-                              if (widget.showUserAvatar)
+                              if (widget.showUserAvatar!)
                                 Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: constraints.maxWidth * 0.02,
                                   ),
                                   child: Opacity(
-                                    opacity: (widget.showAvatarForEverMessage ||
-                                                showAvatar) &&
-                                            widget.messages[i].user.uid ==
-                                                widget.user.uid
-                                        ? 1
-                                        : 0,
+                                    opacity:
+                                        (widget.showAvatarForEverMessage! ||
+                                                    showAvatar) &&
+                                                widget.messages[i].user.uid !=
+                                                    widget.user.uid
+                                            ? 1
+                                            : 0,
                                     child: AvatarContainer(
                                       user: widget.messages[i].user,
                                       onPress: widget.onPressAvatar,
@@ -337,10 +338,10 @@ class _MessageListViewState extends State<MessageListView> {
                   height: 100.0,
                 ),
                 AnimatedPositioned(
-                  top: widget.showLoadMore ? 8.0 : -50.0,
+                  top: widget.showLoadMore! ? 8.0 : -50.0,
                   duration: Duration(milliseconds: 200),
                   child: widget.showLoadEarlierWidget != null
-                      ? widget.showLoadEarlierWidget()
+                      ? widget.showLoadEarlierWidget!()
                       : LoadEarlierWidget(
                           onLoadEarlier: widget.onLoadEarlier,
                           defaultLoadCallback: widget.defaultLoadCallback,

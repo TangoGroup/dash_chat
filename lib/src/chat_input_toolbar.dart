@@ -1,46 +1,46 @@
 part of dash_chat;
 
 class AutoCompleteChatInputToolbar extends StatelessWidget {
-  final TextEditingController controller;
-  final TextStyle inputTextStyle;
-  final InputDecoration inputDecoration;
-  final TextCapitalization textCapitalization;
-  final BoxDecoration inputContainerStyle;
+  final TextEditingController? controller;
+  final TextStyle? inputTextStyle;
+  final InputDecoration? inputDecoration;
+  final TextCapitalization? textCapitalization;
+  final BoxDecoration? inputContainerStyle;
   final List<Widget> leading;
   final List<Widget> trailing;
   final int inputMaxLines;
-  final int maxInputLength;
+  final int? maxInputLength;
   final bool alwaysShowSend;
   final ChatUser user;
-  final Function(ChatMessage) onSend;
-  final String text;
-  final Function(String) onTextChange;
+  final Function(ChatMessage)? onSend;
+  final String? text;
+  final Function(String)? onTextChange;
   final bool inputDisabled;
-  final String Function() messageIdGenerator;
-  final Widget Function(Function) sendButtonBuilder;
-  final Widget Function() inputFooterBuilder;
+  final String Function()? messageIdGenerator;
+  final Widget Function(Function)? sendButtonBuilder;
+  final Widget Function()? inputFooterBuilder;
   final double inputCursorWidth;
-  final Color inputCursorColor;
-  final ScrollController scrollController;
+  final Color? inputCursorColor;
+  final ScrollController? scrollController;
   final bool showTraillingBeforeSend;
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
   final EdgeInsets inputToolbarPadding;
   final EdgeInsets inputToolbarMargin;
   final TextDirection textDirection;
   final bool sendOnEnter;
   final bool reverse;
-  final TextInputAction textInputAction;
+  final TextInputAction? textInputAction;
   final SuggestionsCallback<ChatUser> getMentionSuggestions;
   final Widget Function(BuildContext, ChatUser) mentionSuggestionBuilder;
 
   AutoCompleteChatInputToolbar({
-    Key key,
+    Key? key,
     this.textDirection = TextDirection.ltr,
     this.focusNode,
     this.scrollController,
     this.text,
-    @required this.getMentionSuggestions,
-    @required this.mentionSuggestionBuilder,
+    required this.getMentionSuggestions,
+    required this.mentionSuggestionBuilder,
     this.textInputAction,
     this.sendOnEnter = false,
     this.onTextChange,
@@ -58,7 +58,7 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
     this.inputCursorColor,
     this.onSend,
     this.reverse = false,
-    @required this.user,
+    required this.user,
     this.alwaysShowSend = false,
     this.messageIdGenerator,
     this.inputFooterBuilder,
@@ -102,29 +102,29 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
                       keepSuggestionsOnSuggestionSelected: true,
                       hideSuggestionsOnKeyboardHide: false,
                       onSuggestionSelected: (suggestion) {
-                        int cursor = controller.value.selection.base.offset;
-                        int lastAtSymbol = controller.text
+                        int cursor = controller!.value.selection.base.offset;
+                        int lastAtSymbol = controller!.text
                             .substring(0, cursor)
                             .lastIndexOf('@');
                         if (lastAtSymbol < 0) return;
 
                         int newCursorPos = lastAtSymbol +
-                            suggestion.name.length +
+                            suggestion.name!.length +
                             2; //account for space at end
-                        String newText = controller.text.replaceRange(
+                        String newText = controller!.text.replaceRange(
                             lastAtSymbol, cursor, '@${suggestion.name} ');
-                        TextSelection newSelection = controller.selection
+                        TextSelection newSelection = controller!.selection
                             .copyWith(
                                 baseOffset: newCursorPos,
                                 extentOffset: newCursorPos);
 
-                        controller.value = controller.value
+                        controller!.value = controller!.value
                             .copyWith(text: newText, selection: newSelection);
 
-                        onTextChange?.call(newText);
+                        onTextChange!(newText);
                       },
                       suggestionsCallback: (String pattern) {
-                        int cursor = controller.value.selection.base.offset;
+                        int cursor = controller!.value.selection.base.offset;
                         if (cursor < 0) return noSuggestions;
                         int lastAtSymbol =
                             (pattern.substring(0, cursor) ?? pattern)
@@ -145,7 +145,7 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
                       textFieldConfiguration: TextFieldConfiguration(
                         focusNode: focusNode,
                         onChanged: (value) {
-                          onTextChange(value);
+                          onTextChange!(value);
                         },
                         onSubmitted: (value) {
                           if (sendOnEnter) {
@@ -155,12 +155,13 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
                         keyboardType: TextInputType.multiline,
                         textInputAction: textInputAction,
                         decoration: inputDecoration != null
-                            ? inputDecoration
+                            ? inputDecoration!
                             : InputDecoration.collapsed(
                                 hintText: "",
                                 fillColor: Colors.white,
                               ),
-                        textCapitalization: textCapitalization,
+                        textCapitalization:
+                            textCapitalization ?? TextCapitalization.none,
                         controller: controller,
                         style: inputTextStyle,
                         maxLength: maxInputLength,
@@ -176,44 +177,44 @@ class AutoCompleteChatInputToolbar extends StatelessWidget {
               ),
               if (showTraillingBeforeSend) ...trailing,
               if (sendButtonBuilder != null)
-                sendButtonBuilder(() async {
-                  if (text.length != 0) {
-                    await onSend(message);
+                sendButtonBuilder!(() async {
+                  if (text!.length != 0) {
+                    await onSend!(message);
 
-                    controller.text = "";
+                    controller!.text = "";
 
-                    onTextChange("");
+                    onTextChange!("");
                   }
                 })
               else
                 IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: alwaysShowSend || text.length != 0
+                  onPressed: alwaysShowSend || text!.length != 0
                       ? () => _sendMessage(context, message)
                       : null,
                 ),
               if (!showTraillingBeforeSend) ...trailing,
             ],
           ),
-          if (inputFooterBuilder != null) inputFooterBuilder()
+          if (inputFooterBuilder != null) inputFooterBuilder!()
         ],
       ),
     );
   }
 
   void _sendMessage(BuildContext context, ChatMessage message) async {
-    if (text.length != 0) {
-      await onSend(message);
+    if (text!.length != 0) {
+      await onSend!(message);
 
-      controller.text = "";
+      controller!.text = "";
 
-      onTextChange("");
+      onTextChange!("");
 
       FocusScope.of(context).requestFocus(focusNode);
 
       Timer(Duration(milliseconds: 150), () {
-        scrollController.animateTo(
-          reverse ? 0.0 : scrollController.position.maxScrollExtent + 30.0,
+        scrollController!.animateTo(
+          reverse ? 0.0 : scrollController!.position.maxScrollExtent + 30.0,
           curve: Curves.easeOut,
           duration: const Duration(milliseconds: 300),
         );
