@@ -220,12 +220,15 @@ class _MessageListViewState extends State<MessageListView> {
                                               widget.user.uid
                                       ? 1
                                       : 0,
-                                  child: AvatarContainer(
-                                    user: widget.messages[i].user,
-                                    onPress: widget.onPressAvatar,
-                                    onLongPress: widget.onLongPressAvatar,
-                                    avatarBuilder: widget.avatarBuilder,
-                                    avatarMaxSize: widget.avatarMaxSize,
+                                  child: Container(
+                                    color: Colors.green,
+                                    child: AvatarContainer(
+                                      user: widget.messages[i].user,
+                                      onPress: widget.onPressAvatar,
+                                      onLongPress: widget.onLongPressAvatar,
+                                      avatarBuilder: widget.avatarBuilder,
+                                      avatarMaxSize: widget.avatarMaxSize,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -313,12 +316,15 @@ class _MessageListViewState extends State<MessageListView> {
                                                 widget.user.uid
                                         ? 1
                                         : 0,
-                                    child: AvatarContainer(
-                                      user: widget.messages[i].user,
-                                      onPress: widget.onPressAvatar,
-                                      onLongPress: widget.onLongPressAvatar,
-                                      avatarBuilder: widget.avatarBuilder,
-                                      avatarMaxSize: widget.avatarMaxSize,
+                                    child: Container(
+                                      color: Colors.red,
+                                      child: AvatarContainer(
+                                        user: widget.messages[i].user,
+                                        onPress: widget.onPressAvatar,
+                                        onLongPress: widget.onLongPressAvatar,
+                                        avatarBuilder: widget.avatarBuilder,
+                                        avatarMaxSize: widget.avatarMaxSize,
+                                      ),
                                     ),
                                   ),
                                 )
