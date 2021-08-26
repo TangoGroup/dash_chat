@@ -308,8 +308,10 @@ class _MessageListViewState extends State<MessageListView> {
                               ),
                               if (widget.showUserAvatar)
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: constraints.maxWidth * 0.02,
+                                  padding: EdgeInsets.only(
+                                    left: constraints.maxWidth * 0.02,
+                                    right: constraints.maxWidth * 0.02,
+                                    bottom: 8,
                                   ),
                                   child: Opacity(
                                     opacity: (widget.showAvatarForEverMessage ||
