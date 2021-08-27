@@ -41,6 +41,8 @@ class ChatMessage {
   /// actions in message container.
   List<Widget> buttons;
 
+  bool hasReactions;
+
   ChatMessage({
     String id,
     @required this.text,
@@ -51,7 +53,8 @@ class ChatMessage {
     String Function() messageIdGenerator,
     DateTime createdAt,
     this.customProperties,
-    this.buttons
+    this.buttons,
+    this.hasReactions = false,
   }) {
     this.createdAt = createdAt != null ? createdAt : DateTime.now();
     this.id = id != null

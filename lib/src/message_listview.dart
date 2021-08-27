@@ -223,7 +223,9 @@ class _MessageListViewState extends State<MessageListView> {
                                       ? 1
                                       : 0,
                                   child: Container(
-                                    color: Colors.green,
+                                    color: (widget.messages[i].hasReactions)
+                                        ? Colors.green
+                                        : null,
                                     child: AvatarContainer(
                                       user: widget.messages[i].user,
                                       onPress: widget.onPressAvatar,
@@ -321,7 +323,9 @@ class _MessageListViewState extends State<MessageListView> {
                                         ? 1
                                         : 0,
                                     child: Container(
-                                      color: Colors.red,
+                                      color: (widget.messages[i].hasReactions)
+                                          ? Colors.red
+                                          : null,
                                       child: AvatarContainer(
                                         user: widget.messages[i].user,
                                         onPress: widget.onPressAvatar,
